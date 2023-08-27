@@ -29,6 +29,15 @@ class _TodoListPageState extends State<TodoListPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
+                    onSubmitted: (value) {
+                      setState(() {
+                        todoitems.add(TodoItem(
+                          title: textController.text,
+                          isDone: false,
+                        ));
+                      });
+                      textController.clear();
+                    },
                     controller: textController,
                   ),
                 ),
