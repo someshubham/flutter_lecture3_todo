@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lecture3_todo/todo_item.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class TodoListPage extends StatefulWidget {
   const TodoListPage({super.key});
@@ -22,48 +23,94 @@ class _TodoListPageState extends State<TodoListPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: textController,
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                todoitems.add(TodoItem(
-                  title: textController.text,
-                  isDone: false,
-                ));
-              });
-            },
-            child: const Text("Save"),
-          ),
-          for (int i = 0; i < todoitems.length; i++)
-            Row(
-              children: [
-                Checkbox(
-                  value: todoitems[i].isDone,
-                  onChanged: (value) {
-                    setState(() {
-                      todoitems[i].isDone = value!;
-                    });
-                  },
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  margin: const EdgeInsets.all(8),
-                  child: Text(
-                    todoitems.elementAt(i).title,
-                    style: TextStyle(
-                      decoration: (todoitems[i].isDone)
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: textController,
                   ),
                 ),
-              ],
-            )
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    todoitems.add(TodoItem(
+                      title: textController.text,
+                      isDone: false,
+                    ));
+                  });
+                },
+                child: const Text("Save"),
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
+          Expanded(
+            child: Scrollbar(
+              thickness: 20,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: todoitems.length,
+                itemBuilder: (context, i) {
+                  return Slidable(
+                    key: ValueKey(i),
+                    endActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      children: [
+                        SlidableAction(
+                          onPressed: (_) {
+                            setState(() {
+                              todoitems.removeAt(i);
+                            });
+                          },
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          icon: Icons.delete,
+                          label: 'Delete',
+                        ),
+                      ],
+                    ),
+                    startActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      children: [
+                        SlidableAction(
+                          onPressed: (_) {
+                            setState(() {
+                              todoitems.removeAt(i);
+                            });
+                          },
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          icon: Icons.delete,
+                          label: 'Delete',
+                        ),
+                      ],
+                    ),
+                    child: ListTile(
+                      leading: Checkbox(
+                        value: todoitems[i].isDone,
+                        onChanged: (value) {
+                          setState(() {
+                            todoitems[i].isDone = value!;
+                          });
+                        },
+                      ),
+                      title: Text(
+                        todoitems.elementAt(i).title,
+                        style: TextStyle(
+                          decoration: (todoitems[i].isDone)
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );
